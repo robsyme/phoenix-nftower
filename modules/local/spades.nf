@@ -3,7 +3,7 @@ process SPADES {
     label 'process_high_memory'
     container 'staphb/spades:3.15.5'
     //beforeScript 'ulimit -Ss unlimited'
-    afterScript "sh ${baseDir}/bin/afterSpades.sh" // Handles file zipping, renaming with prefix and checks that files were created
+    afterScript "sh afterSpades.sh" // Handles file zipping, renaming with prefix and checks that files were created
     // Create a summaryline file that will be deleted later if spades is successful if not this line shows up in the final Phoenix_output_summary file
 
     input:
@@ -32,8 +32,8 @@ process SPADES {
     def single_reads = "-s $unpaired_reads"
     def phred_offset = params.phred
     """
-    bash ${baseDir}/bin/pipeline_stats_writer_trimd.sh -a ${fastp_raw_qc} -b ${fastp_total_qc} -c ${reads[0]} -d ${reads[1]} -e ${kraken2_trimd_report} -f ${k2_bh_summary} -g ${krona_trimd}
-    sh ${baseDir}/bin/beforeSpades.sh -k ${k2_bh_summary} -n ${prefix} -d ${full_outdir}
+    bash pipeline_stats_writer_trimd.sh -a ${fastp_raw_qc} -b ${fastp_total_qc} -c ${reads[0]} -d ${reads[1]} -e ${kraken2_trimd_report} -f ${k2_bh_summary} -g ${krona_trimd}
+    sh beforeSpades.sh -k ${k2_bh_summary} -n ${prefix} -d ${full_outdir}
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
